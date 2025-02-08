@@ -1,0 +1,17 @@
+#!/bin/sh /etc/rc.common
+
+# Start the tunnel.sh script
+START=99
+STOP=10
+
+start() {
+    /root/tunnel.sh
+}
+
+stop() {
+    # If you want to stop the tunnel script, you can add kill command here.
+    tmux kill-session -t ssh_tunnel
+    sleep 1
+    service redsocks stop
+    echo "Stopping tunnel.sh is not implemented."
+}

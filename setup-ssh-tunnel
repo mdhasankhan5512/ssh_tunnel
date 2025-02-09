@@ -12,3 +12,4 @@ wget https://raw.githubusercontent.com/mdhasankhan5512/ssh_tunnel/refs/heads/mai
 mv custom_ssh_tunnel.lua /usr/lib/lua/luci/model/cbi/
 wget https://raw.githubusercontent.com/mdhasankhan5512/ssh_tunnel/refs/heads/main/controllar.lua
 mv controllar.lua /usr/lib/lua/luci/controller/custom_ssh_tunnel.lua
+/etc/init.d/rpcd restart

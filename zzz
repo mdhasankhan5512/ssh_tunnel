@@ -10,8 +10,10 @@ start() {
 
 stop() {
     # If you want to stop the tunnel script, you can add kill command here.
+    tmux send-keys -t ssh_tunnel C-c
+    sleep 2
     tmux kill-session -t ssh_tunnel
     sleep 1
     service redsocks stop
-    echo "Stopping tunnel.sh is not implemented."
+    echo "Stopping tunnel.sh is implemented."
 }

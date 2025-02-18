@@ -11,9 +11,6 @@ LOCAL_PORT=$(uci get custom_ssh_tunnel.settings.local_port)
 
 # Start a tmux session and run the SSH tunnel
 tmux new-session -d -s ssh_tunnel
-sleep 4
+sleep 1
 tmux send-keys -t ssh_tunnel "sshpass -p '${PASSWORD}' ssh -o 'ProxyCommand=openssl s_client -connect ${HOST}:${PORT} -servername ${SNI} -quiet' -o ServerAliveInterval=30 -o StrictHostKeyChecking=no -N -D ${LOCAL_PORT} ${USERNAME}@${HOST}" C-m
-sleep 3
-service redsocks start
-sleep 3
-service redsocks restart
+

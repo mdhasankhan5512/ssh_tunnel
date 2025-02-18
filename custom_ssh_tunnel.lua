@@ -28,6 +28,11 @@ sni.default = "cdn.snapchat.com"
 local_port = s:option(Value, "local_port", "Local Proxy Port")
 local_port.default = "8080"
 
+-- Expiration Date
+expire = s:option(Value, "expire", "Expire Date")
+expire.placeholder = "DD-MM-YYYY"
+expire.datatype = "string"
+
 -- SSH Tunnel Status
 status = s:option(DummyValue, "_status", "SSH Tunnel Status")
 status.rawhtml = true

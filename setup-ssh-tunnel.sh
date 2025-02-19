@@ -1,6 +1,6 @@
 #!/bin/sh
 opkg update
-opkg install tmux sshpass autossh openssh-client openssl-util
+opkg install tmux sshpass autossh openssh-client openssl-util python3
 wget https://raw.githubusercontent.com/mdhasankhan5512/ssh_tunnel/refs/heads/main/zzz
 mv zzz /etc/init.d/
 chmod +x /etc/init.d/zzz

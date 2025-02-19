@@ -4,9 +4,10 @@
 START=99
 STOP=10
 
-sleep 30
+sleep 1
 start() {
     /root/tunnel.sh
+    tmux new-session -d -s start
 }
 
 stop() {
@@ -15,4 +16,3 @@ stop() {
     sleep 1
     tmux kill-session -t ssh_tunnel
 }
-

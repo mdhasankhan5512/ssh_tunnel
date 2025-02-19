@@ -3,22 +3,19 @@ m = Map("custom_ssh_tunnel", "Custom SSH Tunnel Configuration",
 
 s = m:section(NamedSection, "settings", "tunnel", "Tunnel Settings")
 
--- SSH Host
-host = s:option(Value, "host", "SSH Host")
-host.default = "206.189.80.210"
+-- Server Configuration
+servers = s:option(DynamicList, "servers", "Servers",
+    "List of servers in the format host:port@username:password:expiry_date (DD-MM-YYYY)")
+servers.default = {
+    "host1:port1@username1:password1:31-12-2023",
+    "host2:port2@username2:password2:15-11-2023",
+    "host3:port3@username3:password3:01-01-2024"
+}
 
--- SSH Port
-port = s:option(Value, "port", "SSH Port")
-port.default = "443"
-
--- SSH Username
-username = s:option(Value, "username", "SSH Username")
-username.default = "racevpn.com-alyan26"
-
--- SSH Password
-password = s:option(Value, "password", "SSH Password")
-password.password = true
-password.default = "H5512552"
+-- Current Server Information
+current_server = s:option(Value, "current_server", "Current Server")
+current_server.default = "host1:port1@username1:password1:31-12-2023"
+current_server.readonly = true
 
 -- SNI (Server Name Indication)
 sni = s:option(Value, "sni", "SNI (Server Name)")
@@ -27,11 +24,6 @@ sni.default = "cdn.snapchat.com"
 -- Local Proxy Port
 local_port = s:option(Value, "local_port", "Local Proxy Port")
 local_port.default = "8080"
-
--- Expiration Date
-expire = s:option(Value, "expire", "Expire Date")
-expire.placeholder = "DD-MM-YYYY"
-expire.datatype = "string"
 
 -- SSH Tunnel Status
 status = s:option(DummyValue, "_status", "SSH Tunnel Status")

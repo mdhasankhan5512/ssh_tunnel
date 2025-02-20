@@ -5,7 +5,7 @@ import subprocess
 from datetime import datetime
 
 CONFIG_FILE = "/etc/config/custom_ssh_tunnel"
-CHECK_URL = "https://example.com"
+CHECK_URL = "https://facebook.com"  # Changed to facebook.com
 SERVICE_NAME = "zzz"
 LOG_FILE = "/var/log/custom_ssh_tunnel.log"
 
@@ -14,7 +14,7 @@ def log_message(message):
     today_str = datetime.now().strftime("%Y-%m-%d")
     if not os.path.exists(LOG_FILE) or time.localtime(os.stat(LOG_FILE).st_mtime).tm_mday != time.localtime().tm_mday:
         open(LOG_FILE, "w").close()  # Clear log file daily
-    
+
     with open(LOG_FILE, "a") as log:
         log.write(f"{datetime.now()} - {message}\n")
     print(message)
@@ -24,9 +24,9 @@ def read_config():
     """Reads the configuration file and extracts relevant settings."""
     with open(CONFIG_FILE, "r") as file:
         lines = file.readlines()
-    
+
     config = {"current_server": None, "sni": None, "local_port": None, "servers": []}
-    
+
     for line in lines:
         line = line.strip()
         if line.startswith("option current_server"):
@@ -37,14 +37,30 @@ def read_config():
             config["local_port"] = line.split("'")[1]
         elif line.startswith("list servers"):
             config["servers"].append(line.split("'")[1])
-    
+
     return config
 
 
 def check_internet():
     """Checks internet connectivity using curl."""
-    result = subprocess.run(["curl", "-s", "--head", CHECK_URL], capture_output=True)
-    return result.returncode == 0
+    try:
+        result = subprocess.run(
+            ["curl", "-s", "--head", CHECK_URL],
+            capture_output=True,
+            timeout=30  # Set a timeout to avoid hanging indefinitely
+        )
+
+        # Return True if successful response (HTTP status code 200 or similar)
+        if result.returncode == 0 and "HTTP/2 301" in result.stdout.decode():
+            return True
+        else:
+            return False
+    except subprocess.TimeoutExpired:
+        log_message("Curl command timed out. Internet may be unavailable.")
+        return False
+    except Exception as e:
+        log_message(f"Error checking internet: {e}")
+        return False
 
 
 def parse_server(server):
@@ -71,13 +87,13 @@ def remove_expired_servers(config):
             new_servers.append(server)
         else:
             log_message(f"Removing expired server: {server}")
-    
+
     config["servers"] = new_servers
-    
+
     if config["current_server"] and parse_server(config["current_server"])["expiry"] < today:
         log_message(f"Current server expired: {config['current_server']}")
         config["current_server"] = None
-    
+
     write_config(config)
 
 
@@ -117,16 +133,15 @@ def main():
     while True:
         config = read_config()
         remove_expired_servers(config)
-        
+
         if not check_internet():
             log_message("Internet unavailable. Switching server...")
             switch_server(config)
         else:
             log_message("Internet is available. Monitoring...")
-        
-        time.sleep(30)
+
+        time.sleep(30)  # Ensures the check is done every 30 seconds
 
 
 if __name__ == "__main__":
     main()
-

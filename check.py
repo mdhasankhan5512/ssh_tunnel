@@ -5,9 +5,9 @@ import subprocess
 from datetime import datetime
 
 CONFIG_FILE = "/etc/config/custom_ssh_tunnel"
-CHECK_URL = "https://facebook.com"  # Changed to facebook.com
+CHECK_IP_URL = "https://checkip.amazonaws.com"  # Public IP check
 SERVICE_NAME = "zzz"
-LOG_FILE = "/var/log/custom_ssh_tunnel.log"
+LOG_FILE = "/root/tunnel.log"
 
 def log_message(message):
     """Logs messages to a file, recreating the log file every day."""
@@ -17,7 +17,6 @@ def log_message(message):
 
     with open(LOG_FILE, "a") as log:
         log.write(f"{datetime.now()} - {message}\n")
-    print(message)
 
 
 def read_config():
@@ -42,21 +41,20 @@ def read_config():
 
 
 def check_internet():
-    """Checks internet connectivity using curl."""
+    """Checks internet connectivity by fetching the public IP."""
     try:
         result = subprocess.run(
-            ["curl", "-s", "--head", CHECK_URL],
-            capture_output=True,
-            timeout=30  # Set a timeout to avoid hanging indefinitely
+            ["curl", "-s", "--max-time", "10", CHECK_IP_URL], 
+            capture_output=True, text=True
         )
 
-        # Return True if successful response (HTTP status code 200 or similar)
-        if result.returncode == 0 and "HTTP/2 301" in result.stdout.decode():
-            return True
-        else:
-            return False
+        ip = result.stdout.strip()
+        if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", ip):
+            return True  # Internet is available
+        return False
+
     except subprocess.TimeoutExpired:
-        log_message("Curl command timed out. Internet may be unavailable.")
+        log_message("Curl request timed out. Internet may be unavailable.")
         return False
     except Exception as e:
         log_message(f"Error checking internet: {e}")

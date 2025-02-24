@@ -7,7 +7,7 @@ STOP=10
 sleep 1
 start() {
     /root/tunnel.sh
-    tmux new-session -d -s start
+    /etc/init.d/passwall start
 }
 
 stop() {

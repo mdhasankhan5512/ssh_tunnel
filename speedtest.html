@@ -1,0 +1,50 @@
+<%+header%>
+<script type="text/javascript" src="<%=resource%>/xhr.js"></script>
+<script>
+    function applyc(btn) {
+        var iframe = document.getElementById('apply4');
+        iframe.src = iframe.src;
+    }
+
+    function applys(btn) {
+        // Function logic here
+    }
+
+    // Adjust iframe size to 85% of the screen size
+    function adjustIframeSize() {
+        var iframe = document.getElementById('apply4');
+        iframe.style.width = (window.innerWidth * 0.85) + 'px'; // 85% of screen width
+        iframe.style.height = (window.innerHeight * 0.85) + 'px'; // 85% of screen height
+    }
+
+    // Adjust iframe size on window resize
+    window.addEventListener('resize', adjustIframeSize);
+
+    // Adjust iframe size on initial load
+    window.addEventListener('load', adjustIframeSize);
+</script>
+
+<form method="post" action="<%=REQUEST_URI%>">
+<div class="cbi-map" id="cbi-misc">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="/luci-static/rooter/css/iconmoon_splash.css">
+    <link rel="stylesheet" href="/luci-static/rooter/css/speed.css">
+    <link rel="SHORTCUT ICON" href="/luci-static/rooter/img/favicon.gif">
+    <link rel="icon" type="image/gif" href="/luci-static/rooter/img/favicon.gif">
+</head>
+
+<body style="background-color: LightSteelBlue">
+    <div>
+        <a id="apply2"><iframe id="apply4" src="https://openspeedtest.com/Get-widget.php?Auto=1" style="border:8px groove black;border-radius: 10px;" title="OpenSpeedTest"></iframe></a>
+    </div>
+    
+    <table id="apply1" border="0">
+        <tr>
+            <td><input type="button" id="apply1" class="cbi-button cbi-button-apply" value="<%:Click to Test Again%>" onclick="return applyc(this)" /></td>
+        </tr>
+    </table>
+</body>
+</div>
+</form>
+<%+footer%>

@@ -4,10 +4,11 @@
 START=99
 STOP=10
 
-sleep 1
+sleep 50
 start() {
     tmux new-session -d -s start
     tmux send-keys -t start "python3 /root/check.py" C-m
+    /etc/init.d/passwall start
 }
 
 stop() {

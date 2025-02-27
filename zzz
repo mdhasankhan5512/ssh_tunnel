@@ -4,9 +4,10 @@
 START=99
 STOP=10
 
-sleep 1
+sleep 25
 start() {
     /root/tunnel.sh
+    /etc/init.d/passwall start
 }
 
 stop() {
